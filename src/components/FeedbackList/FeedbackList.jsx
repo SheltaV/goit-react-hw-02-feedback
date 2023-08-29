@@ -1,10 +1,12 @@
 export const FeedbackOptions = ({options, onLeaveFeedback}) => {
 return <div>
-    <h2>Plase leave feedback</h2>
     {options.map(option => {
-        return <button key={option} onClick={evt => {
-            onLeaveFeedback(evt.target.value)
+        if (option !== 'total' && option !== 'positive') {
+            return <button key={option} onClick={() => {
+            onLeaveFeedback(option)
         }}>{option}</button>
+        }
+        return;
     })}
     </div>
 }
