@@ -17,56 +17,37 @@ export class App extends Component {
         [option]: prevState[option] + 1,
         };
     });
-    this.countTotalFeedback()
-    this.countPositiveFeedbackPercentage()
   }
 
   countTotalFeedback = () => {
-    this.setState((prevState) => {
-      return {
-        total: prevState.good + prevState.neutral + prevState.bad
-      }
-    }
-    )
+    const { good, neutral, bad } = this.state;
+    return good + neutral + bad;
   }
 
   countPositiveFeedbackPercentage = () => {
-    this.setState(prevState => {
-      return {
-        positive: Math.round((prevState.good / (1 + prevState.neutral + prevState.bad)) * 100)
-      }
-    })
+    const { good, neutral, bad } = this.state;
+    return Math.round((good / (1 + neutral + bad)) * 100)
   }
 
 
   render() {
-    if (this.state.total > 0) {
-    return (<>
-      <Section title ='Please leave feedback'>
+    const { good, neutral, bad } = this.state;
+    const total = this.countTotalFeedback();
+    const positive = this.countPositiveFeedbackPercentage();
+    return (
+      <>
+      <Section title='Please leave feedback'>
       <FeedbackOptions options={Object.keys(this.state)}
           onLeaveFeedback={this.handleClickCount} />
       </Section>
-
       <Section title='Statistics'>
-      <Statistics good={this.state.good}
-        neutral={this.state.neutral}
-        bad={this.state.bad}
-        total={this.state.total}
-          positivePercentage={this.state.positive} />
+        {total > 0 ? <Statistics good={good}
+        neutral={neutral}
+        bad={bad}
+        total={total}
+        positivePercentage={positive} /> : <Notification message="There is no feedback"></Notification>}
       </Section>
       </>
       )
     }
-    return (<>
-      <Section title ='Please leave feedback'>
-      <FeedbackOptions options={Object.keys(this.state)}
-          onLeaveFeedback={this.handleClickCount} />
-      </Section>
-
-      <Section title='Statistics'>
-      <Notification message="There is no feedback"/>
-      </Section>
-      </>
-    )
   };
-};
